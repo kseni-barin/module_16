@@ -15,7 +15,7 @@ async def get_dict_users() -> dict:
 async def create_user(username: Annotated[str, Path(min_length=3, max_length=15, description='Enter username',
                                                     example='User2')],
                         age: Annotated[int, Path(ge=16, le=90, description='Enter age', example='35')]) -> str:
-    user_id = str(int(max(users, key = int)) + 1)
+    user_id = str(int(max(users, key = int)) + 1 if users else 1)
     users[user_id] = f'Имя: {username}, возраст: {age}'
     return f"User {user_id} is registered"
 
