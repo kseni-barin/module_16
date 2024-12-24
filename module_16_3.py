@@ -15,20 +15,22 @@ async def get_dict_users() -> dict:
 async def create_user(username: Annotated[str, Path(min_length=3, max_length=15, description='Enter username',
                                                     example='User2')],
                         age: Annotated[int, Path(ge=16, le=90, description='Enter age', example='35')]) -> str:
-    user_id = str(int(max(users, key = int)) + 1 if users else 1)
-    users[user_id] = f'Имя: {username}, возраст: {age}'
+    #user_id = str(int(max(users, key = int)) + 1)
+    user_id = int(max(users, key = int)) + 1 if users else 1
+    users[str(user_id)] = f'Имя: {username}, возраст: {age}'
     return f"User {user_id} is registered"
 
 @app.put('/users/{user_id}/{username}/{age}')
-async def update_users(user_id: str, username: Annotated[str, Path(min_length=3, max_length=15, description='Enter '
-                                                                                                        'username',
-                                                    example='User2')],
+async def update_users(user_id: Annotated[int, Path(ge=1, le=100, description='Enter User ID', example='1')] ,
+                       username: Annotated[str, Path(min_length=3, max_length=15,
+                                                     description='Enter username', example='User2')],
                         age: Annotated[int, Path(ge=16, le=90, description='Enter age', example='35')]) -> str:
-    users[user_id] = f"Имя: {username}, возраст: {age}"
+    users[str(user_id)] = f"Имя: {username}, возраст: {age}"
     return f"The user {user_id} is updated"
 
 @app.delete('/user/{user_id}')
-async def delete_user(user_id: str) -> str:
-    users.pop(user_id)
+async def delete_user(user_id: Annotated[int, Path(ge=1, le=100, description='Enter User ID', example='1')] ) -> str:
+    users.pop(str(user_id))
     return f"User {user_id} has been deleted"
+
 
